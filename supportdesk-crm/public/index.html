@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SupportDesk — Customer Support CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy-950: #0A0F1E;
+      --navy-900: #0D1526;
+      --navy-800: #16203A;
+      --navy-700: #202B4A;
+      --indigo-600: #5B5FE9;
+      --indigo-500: #6E72F0;
+      --indigo-50: #EFEFFD;
+      --bg: #F6F7FB;
+      --surface: #FFFFFF;
+      --border: #E7E9F0;
+      --text-900: #12162B;
+      --text-600: #565C74;
+      --text-400: #8A90A6;
+      --red-bg: #FDECEC;
+      --red-tx: #C8372F;
+      --amber-bg: #FEF3DB;
+      --amber-tx: #B6790A;
+      --green-bg: #E4F7EC;
+      --green-tx: #17874C;
+      --shadow-sm: 0 1px 2px rgba(16, 24, 60, 0.05);
+      --shadow-md: 0 6px 20px rgba(16, 24, 60, 0.08);
+      --shadow-lg: 0 16px 40px rgba(16, 24, 60, 0.14);
+      --radius: 14px;
+      --radius-sm: 10px;
+      color-scheme: light;
+    }
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-900);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    ::selection {
+      background: var(--indigo-500);
+      color: #fff;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--indigo-500);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    /* ---------- Layout shell ---------- */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 248px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      color: var(--text-600);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 40;
+      transition: transform 0.28s ease;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 22px 20px 18px;
+    }
+
+    .sidebar-brand .mark {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--indigo-500), #8B8FF7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .sidebar-brand .name {
+      font-weight: 700;
+      font-size: 16.5px;
+      color: var(--text-900);
+      letter-spacing: -0.01em;
+    }
+
+    .sidebar-nav {
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-top: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-600);
+      transition: background 0.15s ease, color 0.15s ease;
+      position: relative;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      opacity: 0.85;
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+      color: var(--text-900);
+    }
+
+    .nav-item.active {
+      background: var(--indigo-50);
+      color: var(--indigo-600);
+    }
+
+    .nav-item.active::before {
+      content: "";
+      position: absolute;
+      left: -14px;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--indigo-500);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+    }
+
+    .sidebar-footer {
+      padding: 16px 18px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8B8FF7, var(--indigo-600));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer .who {
+      line-height: 1.25;
+      min-width: 0;
+    }
+
+    .sidebar-footer .who .nm {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-900);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .sidebar-footer .who .rl {
+      font-size: 12px;
+      color: var(--text-600);
+    }
+
+    .sidebar-footer .dots {
+      margin-left: auto;
+      color: var(--text-400);
+      opacity: 0.7;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 10, 20, 0.55);
+      z-index: 35;
+      backdrop-filter: blur(1px);
+    }
+
+    .sidebar-backdrop.show {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    /* Main column */
+    .main-col {
+      margin-left: 248px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      height: 64px;
+      flex-shrink: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      padding: 6px;
+      border-radius: 8px;
+      color: var(--text-600);
+    }
+
+    .hamburger:hover {
+      background: var(--indigo-50);
+    }
+
+    .topbar-search {
+      flex: 1;
+      max-width: 420px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .topbar-search:focus-within {
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px var(--indigo-50);
+    }
+
+    .topbar-search svg {
+      width: 16px;
+      height: 16px;
+      color: var(--text-400);
+      flex-shrink: 0;
+    }
+
+    .topbar-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13.5px;
+      color: var(--text-900);
+      width: 100%;
+    }
+
+    .topbar-search input::placeholder {
+      color: var(--text-400);
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease, border-color 0.15s ease;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .icon-btn svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .icon-btn:hover {
+      background: var(--indigo-50);
+      border-color: var(--indigo-50);
+      color: var(--indigo-600);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.94);
+    }
+
+    .icon-btn .dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #E24C4C;
+      border: 2px solid var(--surface);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease, opacity .15s ease;
+      white-space: nowrap;
+    }
+
+    .btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .btn-primary {
+      background: var(--indigo-600);
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(91, 95, 233, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: #4F53DE;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(91, 95, 233, 0.32);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-600);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg);
+      color: var(--text-900);
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      color: var(--red-tx);
+      border: 1px solid var(--red-bg);
+    }
+
+    .btn-danger-ghost:hover {
+      background: var(--red-bg);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .profile-chip {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Content */
+    .view {
+      padding: 26px 28px 60px;
+      max-width: 1180px;
+    }
+
+    .view-fade {
+      animation: viewFade 0.32s ease;
+    }
+
+    @keyframes viewFade {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .page-head h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 0 4px;
+    }
+
+    .page-head p {
+      margin: 0;
+      color: var(--text-600);
+      font-size: 13.5px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-600);
+      margin-bottom: 14px;
+    }
+
+    .back-link:hover {
+      color: var(--indigo-600);
+    }
+
+    .back-link svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Stat cards */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: statIn 0.5s ease forwards;
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: 0.02s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.08s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.14s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    @keyframes statIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .stat-ic {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-ic svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .stat-num {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--text-600);
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    /* Card / section */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .section-head h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .field-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      min-width: 260px;
+      flex: 1;
+    }
+
+    .field-search:focus-within {
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px var(--indigo-50);
+    }
+
+    .field-search svg {
+      width: 15px;
+      height: 15px;
+      color: var(--text-400);
+      flex-shrink: 0;
+    }
+
+    .field-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 13.5px;
+      width: 100%;
+      color: var(--text-900);
+    }
+
+    .field-search input::placeholder {
+      color: var(--text-400);
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    select.status-filter {
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 32px 9px 12px;
+      font-size: 13.5px;
+      color: var(--text-900);
+      min-width: 150px;
+      cursor: pointer;
+    }
+
+    select.status-filter:focus {
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px var(--indigo-50);
+    }
+
+    .select-wrap::after {
+      content: "";
+      position: absolute;
+      right: 11px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-right: 1.6px solid var(--text-400);
+      border-bottom: 1.6px solid var(--text-400);
+      transform: translateY(-65%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table.tickets {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      min-width: 720px;
+    }
+
+    table.tickets thead th {
+      text-align: left;
+      font-size: 11.5px;
+      text-transform: none;
+      font-weight: 600;
+      color: var(--text-400);
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.tickets tbody td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-900);
+      vertical-align: middle;
+    }
+
+    table.tickets tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    table.tickets tbody tr:hover {
+      background: var(--indigo-50);
+    }
+
+    table.tickets tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tk-id {
+      font-weight: 700;
+      color: var(--indigo-600);
+    }
+
+    .tk-cust {
+      font-weight: 600;
+    }
+
+    .tk-email,
+    .tk-issue {
+      color: var(--text-600);
+    }
+
+    .tk-date {
+      color: var(--text-600);
+      white-space: nowrap;
+    }
+
+    .view-link {
+      font-weight: 600;
+      color: var(--text-400);
+      opacity: 0.7;
+      transition: opacity 0.15s ease, color 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    table.tickets tbody tr:hover .view-link {
+      opacity: 1;
+      color: var(--indigo-600);
+    }
+
+    .view-link svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .badge.open {
+      background: var(--red-bg);
+      color: var(--red-tx);
+    }
+
+    .badge.open::before {
+      background: var(--red-tx);
+    }
+
+    .badge.progress {
+      background: var(--amber-bg);
+      color: var(--amber-tx);
+    }
+
+    .badge.progress::before {
+      background: var(--amber-tx);
+    }
+
+    .badge.closed {
+      background: var(--green-bg);
+      color: var(--green-tx);
+    }
+
+    .badge.closed::before {
+      background: var(--green-tx);
+    }
+
+    /* Mobile card rows */
+    .ticket-cards {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ticket-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--surface);
+      transition: background 0.15s ease;
+    }
+
+    .ticket-card:active {
+      background: var(--indigo-50);
+    }
+
+    .ticket-card .row1 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .ticket-card .tk-id {
+      font-size: 13px;
+    }
+
+    .ticket-card .cust {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    .ticket-card .meta {
+      font-size: 12.5px;
+      color: var(--text-600);
+      margin-bottom: 8px;
+    }
+
+    .ticket-card .row2 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .ticket-card .row2 .date {
+      font-size: 12px;
+      color: var(--text-400);
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .empty-ic {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--indigo-50);
+      color: var(--indigo-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .empty-ic svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .empty-state h3 {
+      font-size: 15.5px;
+      margin: 0 0 6px;
+    }
+
+    .empty-state p {
+      font-size: 13.5px;
+      color: var(--text-600);
+      margin: 0 0 18px;
+    }
+
+    /* Skeleton */
+    .skeleton-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sk {
+      background: linear-gradient(90deg, var(--border) 25%, var(--bg) 37%, var(--border) 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    /* Form */
+    .form-card {
+      padding: 26px 26px 22px;
+      max-width: 640px;
+      opacity: 0;
+      animation: formIn 0.4s ease forwards;
+    }
+
+    @keyframes formIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-900);
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      color: var(--text-900);
+      background: var(--surface);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      outline: none;
+      width: 100%;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: var(--indigo-500);
+      box-shadow: 0 0 0 3px var(--indigo-50);
+    }
+
+    .field textarea {
+      resize: vertical;
+      min-height: 96px;
+      font-family: inherit;
+    }
+
+    .field .err {
+      font-size: 12px;
+      color: var(--red-tx);
+      min-height: 15px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .field.has-error input,
+    .field.has-error textarea {
+      border-color: var(--red-tx);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    /* Ticket detail */
+    .detail-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .detail-head h1 {
+      font-size: 21px;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .detail-sub {
+      color: var(--text-600);
+      font-size: 13px;
+      margin: 6px 0 22px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .info-card {
+      padding: 20px 22px;
+      margin-bottom: 16px;
+    }
+
+    .info-card h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-400);
+      margin: 0 0 16px;
+      font-weight: 700;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-row .k {
+      color: var(--text-600);
+    }
+
+    .info-row .v {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .issue-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .issue-desc {
+      font-size: 13.5px;
+      color: var(--text-600);
+      line-height: 1.6;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    .update-card {
+      padding: 20px 22px;
+      position: sticky;
+      top: 84px;
+    }
+
+    .update-card h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--text-400);
+      margin: 0 0 16px;
+      font-weight: 700;
+    }
+
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .note-item {
+      padding: 13px 15px;
+      background: var(--bg);
+      border-radius: 11px;
+      border: 1px solid var(--border);
+    }
+
+    .note-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .note-head .na {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8B8FF7, var(--indigo-600));
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .note-head .nm {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .note-head .nt {
+      font-size: 11.5px;
+      color: var(--text-400);
+      margin-left: auto;
+    }
+
+    .note-body {
+      font-size: 13.5px;
+      color: var(--text-600);
+      line-height: 1.55;
+    }
+
+    .notes-empty {
+      font-size: 13px;
+      color: var(--text-400);
+      padding: 10px 2px;
+    }
+
+    /* Toast */
+    .toast-stack {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 340px;
+    }
+
+    .toast {
+      background: var(--surface);
+      color: var(--text-900);
+      border: 1px solid var(--border);
+      padding: 13px 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13.5px;
+      animation: toastIn 0.28s cubic-bezier(.2, .9, .3, 1.2);
+    }
+
+    .toast.leaving {
+      animation: toastOut 0.22s ease forwards;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateX(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes toastOut {
+      to {
+        opacity: 0;
+        transform: translateX(24px);
+      }
+    }
+
+    .toast .tic {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #2FAE66;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .toast.error .tic {
+      background: #E0524A;
+    }
+
+    .toast .tic svg {
+      width: 11px;
+      height: 11px;
+      color: #fff;
+    }
+
+    .toast .msg strong {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 1px;
+    }
+
+    .toast .msg span {
+      color: var(--text-600);
+      font-size: 12.5px;
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.001s !important;
+        transition-duration: 0.001s !important;
+      }
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 980px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .update-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-col {
+        margin-left: 0;
+      }
+
+      .hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .topbar-search {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .view {
+        padding: 18px 14px 50px;
+      }
+
+      .table-wrap {
+        display: none;
+      }
+
+      .ticket-cards {
+        display: flex;
+      }
+
+      .btn-primary span.long {
+        display: none;
+      }
+
+      .page-head h1 {
+        font-size: 19px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .stat-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 13px 14px;
+      }
+
+      .stat-num {
+        font-size: 21px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-shell">
+    <div class="sidebar-backdrop" id="backdrop"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="mark">S</div>
+        <div class="name">SupportDesk</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#/" class="nav-item" data-nav="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="3" width="7" height="9" rx="1.5" />
+            <rect x="14" y="3" width="7" height="5" rx="1.5" />
+            <rect x="14" y="12" width="7" height="9" rx="1.5" />
+            <rect x="3" y="16" width="7" height="5" rx="1.5" />
+          </svg>
+          Dashboard
+        </a>
+        <a href="#/create" class="nav-item" data-nav="create">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Create Ticket
+        </a>
+        <a href="#/" class="nav-item" data-nav="mytickets">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M4 6h16M4 12h16M4 18h10" />
+          </svg>
+          My Tickets
+        </a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-footer">
+        <div class="avatar">AD</div>
+        <div class="who">
+          <div class="nm">Amina Dadan</div>
+          <div class="rl">Support Team</div>
+        </div>
+        <div class="dots">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <circle cx="12" cy="5" r="1.6" />
+            <circle cx="12" cy="12" r="1.6" />
+            <circle cx="12" cy="19" r="1.6" />
+          </svg>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-col">
+      <header class="topbar">
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div class="topbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="M21 21l-4.3-4.3" />
+          </svg>
+          <input type="text" id="topSearch" placeholder="Search tickets, names, emails…">
+        </div>
+        <div class="topbar-spacer"></div>
+        <button class="icon-btn" id="bellBtn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.7 21a2 2 0 01-3.4 0" />
+          </svg>
+          <span class="dot" id="bellDot" style="display:none;"></span>
+        </button>
+        <a href="#/create" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          <span class="long">Create Ticket</span>
+        </a>
+        <div class="avatar profile-chip">AD</div>
+      </header>
+
+      <main id="mainOutlet"></main>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ============ Utilities ============ */
+      const $ = (sel, root) => (root || document).querySelector(sel);
+      const $all = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+      const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+      function initials(name) {
+        const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return "?";
+        return (parts[0][0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
+      }
+
+      function fmtDate(iso) {
+        if (!iso) return "—";
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return "—";
+        return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" });
+      }
+      function fmtDateTime(iso) {
+        if (!iso) return "—";
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return "—";
+        return d.toLocaleDateString(undefined, { day: "2-digit", month: "short", year: "numeric" }) + ", " +
+          d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+      }
+      function relTime(iso) {
+        if (!iso) return "";
+        const diff = Date.now() - new Date(iso).getTime();
+        const m = Math.floor(diff / 60000);
+        if (m < 1) return "just now";
+        if (m < 60) return m + "m ago";
+        const h = Math.floor(m / 60);
+        if (h < 24) return h + "h ago";
+        return Math.floor(h / 24) + "d ago";
+      }
+
+      const STATUS_META = {
+        "Open": { cls: "open" },
+        "In Progress": { cls: "progress" },
+        "Closed": { cls: "closed" }
+      };
+      function badge(status) {
+        const meta = STATUS_META[status] || STATUS_META["Open"];
+        return '<span class="badge ' + meta.cls + '">' + esc(status) + '</span>';
+      }
+
+      /* ============ Toasts ============ */
+      const toastStack = $("#toastStack");
+      function toast(title, msg, type) {
+        const el = document.createElement("div");
+        el.className = "toast" + (type === "error" ? " error" : "");
+        const iconPath = type === "error"
+          ? '<path d="M6 6l12 12M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round"/>'
+          : '<path d="M5 12l4 4 10-10" stroke="white" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
+        el.innerHTML =
+          '<span class="tic"><svg viewBox="0 0 24 24">' + iconPath + '</svg></span>' +
+          '<span class="msg"><strong>' + esc(title) + '</strong>' + (msg ? '<span>' + esc(msg) + '</span>' : '') + '</span>';
+        toastStack.appendChild(el);
+        setTimeout(() => {
+          el.classList.add("leaving");
+          setTimeout(() => el.remove(), 240);
+        }, 3600);
+      }
+
+      /* ============ Sidebar (mobile) ============ */
+      const sidebar = $("#sidebar"), backdrop = $("#backdrop");
+      function openSidebar() { sidebar.classList.add("open"); backdrop.classList.add("show"); }
+      function closeSidebar() { sidebar.classList.remove("open"); backdrop.classList.remove("show"); }
+      $("#hamburgerBtn").addEventListener("click", openSidebar);
+      backdrop.addEventListener("click", closeSidebar);
+      $all(".nav-item").forEach(el => el.addEventListener("click", closeSidebar));
+
+      $("#bellBtn").addEventListener("click", () => {
+        $("#bellDot").style.display = "none";
+        toast("No new notifications", "You're all caught up.");
+      });
+
+      /* ============ Data layer ("API") ============
+         Talks to the real backend: a Node/Express server backed by a SQLite
+         database (see server.js / db.js / routes/tickets.js in this repo).
+         Every function here maps to exactly one REST call. The frontend is
+         served from the same Express app, so relative paths ("/api/tickets")
+         are enough — no separate host or CORS config needed. */
+      const API_BASE = "/api/tickets";
+
+      let tickets = [];        // local cache of the list (from GET /api/tickets)
+      let ticketsReady = false;
+      let ticketCache = {};    // ticket_id -> full detail (from GET /api/tickets/:id)
+
+      async function apiFetch(url, options) {
+        const res = await fetch(url, options);
+        let body = null;
+        try { body = await res.json(); } catch (e) { /* no body */ }
+        if (!res.ok) {
+          const msg = (body && body.error) ? body.error : ("Request failed (" + res.status + ")");
+          throw new Error(msg);
+        }
+        return body;
+      }
+
+      async function loadTickets() {
+        try {
+          const data = await apiFetch(API_BASE);
+          tickets = data || [];
+          ticketsReady = true;
+        } catch (err) {
+          console.error("Failed to load tickets", err);
+          ticketsReady = true;
+          tickets = [];
+          toast("Couldn't reach the server", err.message, "error");
+        }
+        renderRoute();
+      }
+
+      async function api_createTicket(payload) {
+        const created = await apiFetch(API_BASE, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        await loadTickets();
+        return created; // { ticket_id, created_at }
+      }
+
+      async function api_updateTicket(ticketId, patch) {
+        const result = await apiFetch(API_BASE + "/" + encodeURIComponent(ticketId), {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(patch)
+        });
+        await loadTickets();
+        delete ticketCache[ticketId]; // force a fresh detail fetch next time
+        return result;
+      }
+
+      async function api_addNote(ticketId, text) {
+        await api_updateTicket(ticketId, { notes: text });
+      }
+
+      async function getTicketDetail(ticketId) {
+        if (ticketCache[ticketId]) return ticketCache[ticketId];
+        const detail = await apiFetch(API_BASE + "/" + encodeURIComponent(ticketId));
+        ticketCache[ticketId] = detail;
+        return detail;
+      }
+
+      function getTicketById(ticketId) {
+        return tickets.find(t => t.ticket_id === ticketId) || null;
+      }
+
+      /* ============ Stats ============ */
+      function computeStats(list) {
+        return {
+          total: list.length,
+          open: list.filter(t => t.status === "Open").length,
+          progress: list.filter(t => t.status === "In Progress").length,
+          closed: list.filter(t => t.status === "Closed").length
+        };
+      }
+
+      /* ============ Router ============ */
+      const outlet = $("#mainOutlet");
+      let dashState = { q: "", status: "All" };
+
+      function setActiveNav(name) {
+        $all(".nav-item").forEach(el => el.classList.toggle("active", el.dataset.nav === name));
+      }
+
+      function renderRoute() {
+        const hash = location.hash || "#/";
+        if (hash.startsWith("#/ticket/")) {
+          const id = decodeURIComponent(hash.slice("#/ticket/".length));
+          setActiveNav("mytickets");
+          renderTicketDetail(id);
+        } else if (hash === "#/create") {
+          setActiveNav("create");
+          renderCreateTicket();
+        } else {
+          setActiveNav("dashboard");
+          renderDashboard();
+        }
+      }
+      window.addEventListener("hashchange", renderRoute);
+
+      /* ============ Dashboard ============ */
+      function statIcon(kind) {
+        const paths = {
+          total: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+          open: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/>',
+          progress: '<path d="M12 3a9 9 0 106.7 3"/><path d="M12 3v5h5"/>',
+          closed: '<path d="M5 12l4 4 10-10"/>'
+        };
+        return paths[kind];
+      }
+
+      function statCardsHtml(stats) {
+        const cards = [
+          { key: "total", label: "Total Tickets", val: stats.total, tint: "var(--indigo-50)", color: "var(--indigo-600)" },
+          { key: "open", label: "Open", val: stats.open, tint: "var(--red-bg)", color: "var(--red-tx)" },
+          { key: "progress", label: "In Progress", val: stats.progress, tint: "var(--amber-bg)", color: "var(--amber-tx)" },
+          { key: "closed", label: "Closed", val: stats.closed, tint: "var(--green-bg)", color: "var(--green-tx)" }
+        ];
+        return cards.map(c =>
+          '<div class="stat-card">' +
+          '<div class="stat-top">' +
+          '<div class="stat-ic" style="background:' + c.tint + ';color:' + c.color + ';">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + statIcon(c.key) + '</svg>' +
+          '</div>' +
+          '</div>' +
+          '<div class="stat-num">' + c.val + '</div>' +
+          '<div class="stat-label">' + c.label + '</div>' +
+          '</div>'
+        ).join("");
+      }
+
+      function filterTickets(list) {
+        const q = dashState.q.trim().toLowerCase();
+        return list.filter(t => {
+          const statusOk = dashState.status === "All" || t.status === dashState.status;
+          if (!statusOk) return false;
+          if (!q) return true;
+          const hay = [t.ticket_id, t.customer_name, t.customer_email, t.subject, t.description].join(" ").toLowerCase();
+          return hay.includes(q);
+        });
+      }
+
+      function skeletonRows(n) {
+        let html = "";
+        for (let i = 0; i < n; i++) {
+          html += '<div class="skeleton-row">' +
+            '<div class="sk" style="width:70px;height:14px;"></div>' +
+            '<div class="sk" style="width:110px;height:14px;"></div>' +
+            '<div class="sk" style="width:150px;height:14px;"></div>' +
+            '<div class="sk" style="width:120px;height:14px;"></div>' +
+            '<div class="sk" style="width:70px;height:20px;border-radius:999px;"></div>' +
+            '<div class="sk" style="width:80px;height:14px;"></div>' +
+            '</div>';
+        }
+        return html;
+      }
+
+      function renderDashboard() {
+        const stats = computeStats(tickets);
+
+        outlet.innerHTML =
+          '<div class="view view-fade">' +
+          '<div class="page-head">' +
+          '<div><h1>Support Tickets</h1><p>Manage and track all customer support requests</p></div>' +
+          '<a href="#/create" class="btn btn-primary">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>' +
+          'Create Ticket' +
+          '</a>' +
+          '</div>' +
+
+          '<div class="stat-grid">' + statCardsHtml(stats) + '</div>' +
+
+          '<div class="card" style="padding:20px 20px 8px;">' +
+          '<div class="section-head">' +
+          '<h2>All Support Tickets</h2>' +
+          '<div class="toolbar">' +
+          '<div class="field-search">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>' +
+          '<input type="text" id="dashSearch" placeholder="Search by name, ticket ID, email or description…" value="' + esc(dashState.q) + '">' +
+          '</div>' +
+          '<div class="select-wrap">' +
+          '<select class="status-filter" id="statusFilter">' +
+          ['All', 'Open', 'In Progress', 'Closed'].map(s => '<option value="' + s + '"' + (dashState.status === s ? ' selected' : '') + '>' + (s === 'All' ? 'All Statuses' : s) + '</option>').join('') +
+          '</select>' +
+          '</div>' +
+          '<button class="icon-btn" id="refreshBtn" aria-label="Refresh">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-2.6-6.4"/><path d="M21 4v6h-6"/></svg>' +
+          '</button>' +
+          '</div>' +
+          '</div>' +
+          '<div id="ticketListZone"></div>' +
+          '</div>' +
+          '</div>';
+
+        $("#dashSearch").addEventListener("input", (e) => { dashState.q = e.target.value; renderTicketZone(); });
+        $("#statusFilter").addEventListener("change", (e) => { dashState.status = e.target.value; renderTicketZone(); });
+        $("#refreshBtn").addEventListener("click", () => {
+          $("#refreshBtn").style.transform = "rotate(360deg)";
+          $("#refreshBtn svg").style.transition = "transform 0.5s ease";
+          renderTicketZone();
+          toast("Refreshed", "Ticket list is up to date.");
+        });
+
+        renderTicketZone();
+      }
+
+      function renderTicketZone() {
+        const zone = $("#ticketListZone");
+        if (!zone) return;
+
+        if (!ticketsReady) {
+          zone.innerHTML = '<div class="table-wrap"><div style="border-top:1px solid var(--border);">' + skeletonRows(5) + '</div></div>';
+          return;
+        }
+
+        const filtered = filterTickets(tickets);
+
+        if (!filtered.length) {
+          const noneAtAll = tickets.length === 0;
+          zone.innerHTML =
+            '<div class="empty-state">' +
+            '<div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12h6M9 16h6M8 3h8l3 4v12a2 2 0 01-2 2H7a2 2 0 01-2-2V7l3-4z"/></svg></div>' +
+            '<h3>No tickets found</h3>' +
+            '<p>' + (noneAtAll ? "Create a new support ticket to get started." : "Try a different search term or status filter.") + '</p>' +
+            (noneAtAll ? '<a href="#/create" class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Create Ticket</a>' : '') +
+            '</div>';
+          return;
+        }
+
+        // Desktop table
+        let rows = filtered.map(t => {
+          const id = t.ticket_id || t.id;
+          return '<tr class="row-link" data-id="' + esc(id) + '">' +
+            '<td class="tk-id">' + esc(id) + '</td>' +
+            '<td class="tk-cust">' + esc(t.customer_name) + '</td>' +
+            '<td class="tk-email">' + esc(t.customer_email) + '</td>' +
+            '<td class="tk-issue">' + esc(t.subject) + '</td>' +
+            '<td>' + badge(t.status) + '</td>' +
+            '<td class="tk-date">' + fmtDate(t.created_at) + '</td>' +
+            '<td><span class="view-link">View <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg></span></td>' +
+            '</tr>';
+        }).join("");
+
+        let cards = filtered.map(t => {
+          const id = t.ticket_id || t.id;
+          return '<div class="ticket-card row-link" data-id="' + esc(id) + '">' +
+            '<div class="row1"><span class="tk-id">' + esc(id) + '</span>' + badge(t.status) + '</div>' +
+            '<div class="cust">' + esc(t.customer_name) + '</div>' +
+            '<div class="meta">' + esc(t.subject) + '</div>' +
+            '<div class="row2"><span class="date">' + fmtDate(t.created_at) + '</span><span class="view-link">View →</span></div>' +
+            '</div>';
+        }).join("");
+
+        zone.innerHTML =
+          '<div class="table-wrap">' +
+          '<table class="tickets">' +
+          '<thead><tr><th>Ticket ID</th><th>Customer</th><th>Email</th><th>Issue</th><th>Status</th><th>Created</th><th></th></tr></thead>' +
+          '<tbody>' + rows + '</tbody>' +
+          '</table>' +
+          '</div>' +
+          '<div class="ticket-cards" style="padding:2px 0 14px;">' + cards + '</div>';
+
+        $all(".row-link", zone).forEach(el => {
+          el.addEventListener("click", () => { location.hash = "#/ticket/" + encodeURIComponent(el.dataset.id); });
+        });
+      }
+
+      /* ============ Create Ticket ============ */
+      function renderCreateTicket() {
+        outlet.innerHTML =
+          '<div class="view view-fade">' +
+          '<a href="#/" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>Back to Tickets</a>' +
+          '<div class="page-head"><div><h1>Create Support Ticket</h1><p>Add customer and issue details to create a new support request.</p></div></div>' +
+          '<div class="card form-card">' +
+          '<form id="ticketForm" novalidate>' +
+          '<div class="form-grid">' +
+          '<div class="field" id="f_name"><label for="i_name">Customer Name</label><input id="i_name" type="text" placeholder="Enter customer name" autocomplete="off"><div class="err"></div></div>' +
+          '<div class="field" id="f_email"><label for="i_email">Customer Email</label><input id="i_email" type="text" placeholder="Enter customer email" autocomplete="off"><div class="err"></div></div>' +
+          '<div class="field full" id="f_subject"><label for="i_subject">Issue Title</label><input id="i_subject" type="text" placeholder="Enter issue title" autocomplete="off"><div class="err"></div></div>' +
+          '<div class="field full" id="f_desc"><label for="i_desc">Description</label><textarea id="i_desc" placeholder="Describe the issue in detail…"></textarea><div class="err"></div></div>' +
+          '</div>' +
+          '<div class="form-actions">' +
+          '<a href="#/" class="btn btn-ghost">Cancel</a>' +
+          '<button type="submit" class="btn btn-primary" id="submitBtn">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>' +
+          'Create Ticket' +
+          '</button>' +
+          '</div>' +
+          '</form>' +
+          '</div>' +
+          '</div>';
+
+        const form = $("#ticketForm");
+        const fields = {
+          name: { el: $("#i_name"), wrap: $("#f_name") },
+          email: { el: $("#i_email"), wrap: $("#f_email") },
+          subject: { el: $("#i_subject"), wrap: $("#f_subject") },
+          desc: { el: $("#i_desc"), wrap: $("#f_desc") }
+        };
+
+        function setError(field, msg) {
+          const w = fields[field].wrap;
+          w.classList.toggle("has-error", !!msg);
+          $(".err", w).textContent = msg || "";
+        }
+
+        function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+        function validate() {
+          let ok = true;
+          const name = fields.name.el.value.trim();
+          const email = fields.email.el.value.trim();
+          const subject = fields.subject.el.value.trim();
+          const desc = fields.desc.el.value.trim();
+
+          if (!name) { setError("name", "Customer name is required."); ok = false; } else setError("name", "");
+          if (!email) { setError("email", "Customer email is required."); ok = false; }
+          else if (!validEmail(email)) { setError("email", "Enter a valid email address."); ok = false; }
+          else setError("email", "");
+          if (!subject) { setError("subject", "Issue title is required."); ok = false; } else setError("subject", "");
+          if (!desc) { setError("desc", "Please describe the issue."); ok = false; } else setError("desc", "");
+
+          return ok ? { customer_name: name, customer_email: email, subject: subject, description: desc } : null;
+        }
+
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const data = validate();
+          if (!data) return;
+          const btn = $("#submitBtn");
+          btn.disabled = true;
+          btn.innerHTML = 'Creating…';
+          try {
+            const created = await api_createTicket(data);
+            toast("Ticket created successfully", "Ticket ID: " + created.ticket_id);
+            location.hash = "#/ticket/" + encodeURIComponent(created.ticket_id);
+          } catch (err) {
+            console.error(err);
+            toast("Couldn't create ticket", "Please try again.", "error");
+            btn.disabled = false;
+            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>Create Ticket';
+          }
+        });
+      }
+
+      /* ============ Ticket Detail ============ */
+      async function renderTicketDetail(id) {
+        outlet.innerHTML = '<div class="view view-fade"><div class="card" style="padding:24px;">' + skeletonRows(4) + '</div></div>';
+
+        let t;
+        try {
+          t = await getTicketDetail(id);
+        } catch (err) {
+          outlet.innerHTML =
+            '<div class="view view-fade">' +
+            '<a href="#/" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>Back to Tickets</a>' +
+            '<div class="empty-state">' +
+            '<div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg></div>' +
+            '<h3>Ticket not found</h3><p>This ticket may have been removed, or the link is incorrect.</p>' +
+            '<a href="#/" class="btn btn-primary">Back to Dashboard</a>' +
+            '</div>' +
+            '</div>';
+          return;
+        }
+
+        const ticketId = t.ticket_id;
+        const notes = t.notes || [];
+
+        outlet.innerHTML =
+          '<div class="view view-fade">' +
+          '<a href="#/" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>Back to Tickets</a>' +
+          '<div class="detail-head"><h1>' + esc(ticketId) + '</h1>' + badge(t.status) + '</div>' +
+          '<div class="detail-sub">Created ' + fmtDateTime(t.created_at) + '</div>' +
+
+          '<div class="detail-grid">' +
+          '<div>' +
+          '<div class="card info-card">' +
+          '<h3>Customer Information</h3>' +
+          '<div class="info-row"><span class="k">Customer Name</span><span class="v">' + esc(t.customer_name) + '</span></div>' +
+          '<div class="info-row"><span class="k">Email</span><span class="v">' + esc(t.customer_email) + '</span></div>' +
+          '</div>' +
+          '<div class="card info-card">' +
+          '<h3>Issue</h3>' +
+          '<div class="issue-title">' + esc(t.subject) + '</div>' +
+          '<p class="issue-desc">' + esc(t.description) + '</p>' +
+          '</div>' +
+          '<div class="card info-card">' +
+          '<h3>Notes &amp; Comments</h3>' +
+          '<div class="notes-list" id="notesList">' +
+          (notes.length ? notes.slice().reverse().map(n =>
+            '<div class="note-item">' +
+            '<div class="note-head"><span class="na">' + esc(initials("Amina Dadan")) + '</span><span class="nm">Amina Dadan</span><span class="nt">' + fmtDateTime(n.created_at) + '</span></div>' +
+            '<div class="note-body">' + esc(n.note_text) + '</div>' +
+            '</div>'
+          ).join("") : '<div class="notes-empty">No notes yet — updates and comments will appear here.</div>') +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+
+          '<div class="card update-card">' +
+          '<h3>Update Ticket</h3>' +
+          '<div class="field" style="margin-bottom:14px;">' +
+          '<label for="statusSelect">Status</label>' +
+          '<select id="statusSelect">' +
+          ['Open', 'In Progress', 'Closed'].map(s => '<option value="' + s + '"' + (t.status === s ? ' selected' : '') + '>' + s + '</option>').join('') +
+          '</select>' +
+          '</div>' +
+          '<div class="field" style="margin-bottom:14px;">' +
+          '<label for="noteText">Notes</label>' +
+          '<textarea id="noteText" placeholder="Add a note or comment…"></textarea>' +
+          '</div>' +
+          '<button class="btn btn-primary" id="updateBtn" style="width:100%;justify-content:center;">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12l4 4 10-10"/></svg>' +
+          'Update Ticket' +
+          '</button>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+
+        $("#updateBtn").addEventListener("click", async () => {
+          const btn = $("#updateBtn");
+          const newStatus = $("#statusSelect").value;
+          const noteVal = $("#noteText").value.trim();
+          btn.disabled = true;
+          const original = btn.innerHTML;
+          btn.innerHTML = "Updating…";
+          try {
+            const patch = {};
+            if (newStatus !== t.status) patch.status = newStatus;
+            if (noteVal) patch.notes = noteVal;
+            if (Object.keys(patch).length) {
+              await api_updateTicket(ticketId, patch);
+            }
+            toast("Ticket updated successfully");
+            renderTicketDetail(id);
+          } catch (err) {
+            console.error(err);
+            toast("Couldn't update ticket", err.message || "Please try again.", "error");
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+          }
+        });
+      }
+
+      /* ============ Top search bar → dashboard ============ */
+      $("#topSearch").addEventListener("input", (e) => {
+        dashState.q = e.target.value;
+        if (location.hash !== "#/" && location.hash !== "") {
+          location.hash = "#/"; // hashchange triggers renderRoute, which reads dashState.q
+        } else {
+          renderRoute();
+        }
+      });
+
+      /* ============ Boot ============ */
+      renderRoute();
+      loadTickets();
+    })();
+  </script>
+</body>
+
+</html>
