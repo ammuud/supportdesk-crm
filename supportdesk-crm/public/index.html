@@ -1339,6 +1339,217 @@
         font-size: 21px;
       }
     }
+
+    /* ======================================================
+       CHATBOT WIDGET
+       Self-contained — does not touch any existing styles.
+    ====================================================== */
+
+    /* Floating toggle button */
+    #cb-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9000;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--indigo-600);
+      border: none;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.18s, transform 0.18s;
+      color: #fff;
+    }
+    #cb-toggle:hover { background: var(--indigo-500); transform: scale(1.06); }
+    #cb-toggle svg  { pointer-events: none; }
+
+    /* Badge on toggle */
+    #cb-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: #e74c3c;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg);
+    }
+
+    /* Chat window */
+    #cb-window {
+      position: fixed;
+      bottom: 88px;
+      right: 24px;
+      z-index: 8999;
+      width: 340px;
+      max-height: 520px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      /* hidden by default */
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px) scale(0.97);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    #cb-window.cb-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    /* Header */
+    #cb-header {
+      background: var(--navy-900);
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    #cb-header-icon {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--indigo-600);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    #cb-title { font-size: 13.5px; font-weight: 600; flex: 1; }
+    #cb-status { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 1px; }
+    #cb-close {
+      background: none; border: none; color: rgba(255,255,255,0.65);
+      padding: 4px; border-radius: 6px; display: flex; align-items: center;
+      transition: color 0.15s, background 0.15s;
+    }
+    #cb-close:hover { color: #fff; background: rgba(255,255,255,0.12); }
+
+    /* Messages area */
+    #cb-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg);
+    }
+    #cb-messages::-webkit-scrollbar { width: 4px; }
+    #cb-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Individual message bubbles */
+    .cb-msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+    }
+    .cb-msg.cb-bot  { align-self: flex-start; }
+    .cb-msg.cb-user { align-self: flex-end; }
+    .cb-bubble {
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .cb-bot  .cb-bubble {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-900);
+      border-bottom-left-radius: 4px;
+    }
+    .cb-user .cb-bubble {
+      background: var(--indigo-600);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .cb-sender {
+      font-size: 10.5px;
+      color: var(--text-400);
+      margin-bottom: 3px;
+      padding: 0 2px;
+    }
+    .cb-msg.cb-user .cb-sender { text-align: right; }
+
+    /* Suggested chips */
+    #cb-suggestions {
+      padding: 8px 12px 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+    #cb-suggestions.cb-hidden { display: none; }
+    .cb-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--indigo-600);
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .cb-chip:hover { background: var(--indigo-50); border-color: var(--indigo-500); }
+
+    /* Input row */
+    #cb-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    #cb-input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--text-900);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #cb-input:focus { border-color: var(--indigo-500); }
+    #cb-send {
+      background: var(--indigo-600);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    #cb-send:hover { background: var(--indigo-500); }
+
+    /* Mobile tweaks */
+    @media (max-width: 480px) {
+      #cb-window {
+        right: 0; bottom: 72px;
+        width: 100vw;
+        border-radius: var(--radius) var(--radius) 0 0;
+        max-height: 70vh;
+      }
+      #cb-toggle { bottom: 16px; right: 16px; }
+    }
   </style>
 </head>
 
@@ -1377,10 +1588,10 @@
       </nav>
       <div class="sidebar-spacer"></div>
       <div class="sidebar-footer">
-        <div class="avatar">AD</div>
+        <div class="avatar">ST</div>
         <div class="who">
-          <div class="nm">Amina Dadan</div>
-          <div class="rl">Support Team</div>
+          <div class="nm">Support Team</div>
+          <div class="rl">Service Agent</div>
         </div>
         <div class="dots">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1420,7 +1631,7 @@
           </svg>
           <span class="long">Create Ticket</span>
         </a>
-        <div class="avatar profile-chip">AD</div>
+        <div class="avatar profile-chip">ST</div>
       </header>
 
       <main id="mainOutlet"></main>
@@ -1907,7 +2118,7 @@
           '<div class="notes-list" id="notesList">' +
           (notes.length ? notes.slice().reverse().map(n =>
             '<div class="note-item">' +
-            '<div class="note-head"><span class="na">' + esc(initials("Amina Dadan")) + '</span><span class="nm">Amina Dadan</span><span class="nt">' + fmtDateTime(n.created_at) + '</span></div>' +
+            '<div class="note-head"><span class="na">ST</span><span class="nm">Support Team</span><span class="nt">' + fmtDateTime(n.created_at) + '</span></div>' +
             '<div class="note-body">' + esc(n.note_text) + '</div>' +
             '</div>'
           ).join("") : '<div class="notes-empty">No notes yet — updates and comments will appear here.</div>') +
@@ -1975,6 +2186,212 @@
       renderRoute();
       loadTickets();
     })();
+  </script>
+
+  <!-- ============================================================
+       CHATBOT WIDGET — purely frontend, no external APIs
+  ============================================================ -->
+  <!-- Toggle button -->
+  <button id="cb-toggle" aria-label="Open ServiceHub Assistant" title="ServiceHub Assistant">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span id="cb-badge" aria-hidden="true">1</span>
+  </button>
+
+  <!-- Chat window -->
+  <div id="cb-window" role="dialog" aria-label="ServiceHub Assistant chat" aria-hidden="true">
+    <!-- Header -->
+    <div id="cb-header">
+      <div id="cb-header-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+        </svg>
+      </div>
+      <div>
+        <div id="cb-title">ServiceHub Assistant</div>
+        <div id="cb-status">● Online · Always ready</div>
+      </div>
+      <button id="cb-close" aria-label="Close chat">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="cb-messages" aria-live="polite"></div>
+
+    <!-- Suggested questions -->
+    <div id="cb-suggestions">
+      <button class="cb-chip" data-q="What is ServiceHub CRM?">What is ServiceHub?</button>
+      <button class="cb-chip" data-q="How do I create a ticket?">Create a ticket</button>
+      <button class="cb-chip" data-q="How do I search for a ticket?">Search tickets</button>
+      <button class="cb-chip" data-q="How do I add a note?">Add a note</button>
+    </div>
+
+    <!-- Input -->
+    <div id="cb-input-row">
+      <input id="cb-input" type="text" placeholder="Type a question…" autocomplete="off" aria-label="Chat message input" />
+      <button id="cb-send" aria-label="Send message">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+  /* ============================================================
+     CHATBOT LOGIC — self-contained, no external APIs
+  ============================================================ */
+  (function () {
+    /* ---------- FAQ knowledge base ---------- */
+    var KB = [
+      {
+        keys: ["what is servicehub", "what is supportdesk", "what is this", "about", "crm", "servicehub crm"],
+        answer: "<b>ServiceHub CRM</b> is a customer support ticket management system. It lets your support team create, track, filter, update, and comment on customer tickets — all in one place."
+      },
+      {
+        keys: ["create a ticket", "new ticket", "submit ticket", "raise ticket", "open ticket", "add ticket"],
+        answer: "To create a ticket:<br>1. Click <b>New Ticket</b> in the top-right of the dashboard.<br>2. Fill in the customer name, issue type, priority, and description.<br>3. Click <b>Submit</b>. The ticket will appear in your dashboard instantly."
+      },
+      {
+        keys: ["search", "find a ticket", "look up ticket", "search ticket", "find ticket"],
+        answer: "Use the <b>Search</b> bar at the top of the dashboard. Type a customer name, ticket ID, or keyword — the ticket list updates as you type in real time."
+      },
+      {
+        keys: ["filter", "filter ticket", "sort", "by status", "by priority", "by type"],
+        answer: "Use the <b>filter dropdowns</b> at the top of the ticket list to narrow results by:<br>• <b>Status</b> — Open, In Progress, Resolved, Closed<br>• <b>Priority</b> — Low, Medium, High, Urgent<br>• <b>Type</b> — Technical, Billing, General, etc."
+      },
+      {
+        keys: ["update status", "change status", "update ticket", "ticket status", "resolve ticket", "close ticket"],
+        answer: "Open a ticket by clicking it, then scroll to the <b>Update Ticket</b> panel. Change the status from the dropdown and click <b>Save Changes</b>. The ticket card will reflect the new status immediately."
+      },
+      {
+        keys: ["add a note", "add note", "comment", "add comment", "note", "internal note"],
+        answer: "Open a ticket, scroll to the <b>Notes & Comments</b> section, type your note in the text area, and click <b>Add Note</b>. Notes are timestamped and visible to your whole support team."
+      },
+      {
+        keys: ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"],
+        answer: "Hi there! 👋 I'm the <b>ServiceHub Assistant</b>. Ask me anything about using the CRM — creating tickets, searching, filtering, or adding notes."
+      },
+      {
+        keys: ["thank", "thanks", "great", "awesome", "helpful", "cheers"],
+        answer: "You're welcome! 😊 Let me know if you have any other questions."
+      }
+    ];
+
+    var FALLBACK = "I don't have an answer for that yet. Try asking about:<br>• Creating a ticket<br>• Searching or filtering tickets<br>• Updating a ticket status<br>• Adding a note";
+
+    /* ---------- DOM refs ---------- */
+    var toggle   = document.getElementById("cb-toggle");
+    var win      = document.getElementById("cb-window");
+    var closeBtn = document.getElementById("cb-close");
+    var messages = document.getElementById("cb-messages");
+    var inputEl  = document.getElementById("cb-input");
+    var sendBtn  = document.getElementById("cb-send");
+    var badge    = document.getElementById("cb-badge");
+    var chips    = document.querySelectorAll(".cb-chip");
+    var sugg     = document.getElementById("cb-suggestions");
+
+    var isOpen = false;
+    var welcomed = false;
+
+    /* ---------- Open / close ---------- */
+    function openChat() {
+      isOpen = true;
+      win.classList.add("cb-open");
+      win.setAttribute("aria-hidden", "false");
+      toggle.setAttribute("aria-expanded", "true");
+      badge.style.display = "none";
+      if (!welcomed) {
+        welcomed = true;
+        addBotMsg("👋 Welcome to <b>ServiceHub Assistant</b>!<br>I can help you navigate the CRM. Choose a question below or type your own.");
+      }
+      setTimeout(function () { inputEl.focus(); }, 220);
+    }
+
+    function closeChat() {
+      isOpen = false;
+      win.classList.remove("cb-open");
+      win.setAttribute("aria-hidden", "true");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+
+    toggle.addEventListener("click", function () { isOpen ? closeChat() : openChat(); });
+    closeBtn.addEventListener("click", closeChat);
+
+    /* Close on Escape */
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && isOpen) closeChat();
+    });
+
+    /* ---------- Add messages ---------- */
+    function addMsg(html, role) {
+      var wrap   = document.createElement("div");
+      wrap.className = "cb-msg cb-" + role;
+      var sender = document.createElement("div");
+      sender.className = "cb-sender";
+      sender.textContent = role === "bot" ? "ServiceHub Assistant" : "You";
+      var bubble = document.createElement("div");
+      bubble.className = "cb-bubble";
+      bubble.innerHTML = html;
+      wrap.appendChild(sender);
+      wrap.appendChild(bubble);
+      messages.appendChild(wrap);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addBotMsg(html)  { addMsg(html, "bot");  }
+    function addUserMsg(text) { addMsg(escHtml(text), "user"); }
+
+    function escHtml(s) {
+      return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+
+    /* ---------- Find best FAQ answer ---------- */
+    function respond(raw) {
+      var q = raw.toLowerCase().trim();
+      for (var i = 0; i < KB.length; i++) {
+        var entry = KB[i];
+        for (var j = 0; j < entry.keys.length; j++) {
+          if (q.indexOf(entry.keys[j]) !== -1) {
+            return entry.answer;
+          }
+        }
+      }
+      return FALLBACK;
+    }
+
+    /* ---------- Send flow ---------- */
+    function send(text) {
+      text = text.trim();
+      if (!text) return;
+      addUserMsg(text);
+      inputEl.value = "";
+      /* Hide chips after first user interaction */
+      sugg.classList.add("cb-hidden");
+      /* Small simulated delay for natural feel */
+      setTimeout(function () {
+        addBotMsg(respond(text));
+      }, 320);
+    }
+
+    sendBtn.addEventListener("click", function () { send(inputEl.value); });
+    inputEl.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(inputEl.value); }
+    });
+
+    /* ---------- Suggestion chips ---------- */
+    chips.forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var q = chip.getAttribute("data-q");
+        send(q);
+      });
+    });
+
+  }());
   </script>
 </body>
 
