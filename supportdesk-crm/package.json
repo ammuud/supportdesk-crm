@@ -1,7 +1,7 @@
 {
   "name": "supportdesk-crm",
   "version": "1.0.0",
-  "description": "Customer Support Ticketing CRM - Node.js + Express + SQLite",
+  "description": "Customer support ticket management system using Express and Supabase",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
